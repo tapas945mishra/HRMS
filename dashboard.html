@@ -1,0 +1,993 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="Content-Security-Policy" content="default-src * data: gap: https://ssl.gstatic.com; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">
+    <META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+    <META HTTP-EQUIV="Expires" CONTENT="-1">
+    <script src="components/loader.js"></script>
+    <script src="lib/angular/angular.min.js"></script>
+    <script src="lib/onsenui/js/onsenui.min.js"></script>
+    <script src="lib/onsenui/js/angular-onsenui.min.js"></script>
+
+    <link rel="stylesheet" href="components/loader.css" />
+    <link rel="stylesheet" href="lib/onsenui/css/onsenui.css" />
+    <link rel="stylesheet" href="lib/onsenui/css/onsen-css-components.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/popup.css" />
+    <link rel="stylesheet" href="css/star-rating-svg.css" />
+    
+</head>
+<body ng-controller="AdminController as app">
+    
+    <ons-splitter>
+        <ons-splitter-side id="menu" side="left" width="60%" collapse swipeable>
+            <ons-page>
+                <ons-list>
+                    <ons-list-header>Operation</ons-list-header>
+                    <ons-list-item modifier="longdivider" onclick="fn.load('attendanceCheck.html',this)" tappable>
+                        <div class="left"><i class="fa fa-hand-paper fa-2x" aria-hidden="true"></i></div>
+                        <div class="center"><span>Attandance Check</span></div>
+                    </ons-list-item>
+                    <ons-list-item modifier="longdivider" onclick="fn.load('starRating.html',this)" tappable>
+                        <div class="left"><i class="fa fa-star fa-2x" aria-hidden="true"></i></div>
+                        <div class="center"><span>Star Rating</span></div>
+                    </ons-list-item>
+                    <ons-list-item modifier="longdivider" onclick="fn.load('eod.html',this)" tappable>
+                        <div class="left"><i class="fa fa-tasks fa-2x" aria-hidden="true"></i></div>
+                        <div class="center"><span>EOD</span></div>
+                    </ons-list-item>
+                    <ons-list-header>Approval Process</ons-list-header>
+                    <ons-list-item modifier="longdivider" class="active" onclick="fn.load('employeeLeave.html',this)" tappable>
+                        <div class="left"><i class="fa fa-bed fa-2x active" aria-hidden="true"></i></div>
+                        <div class="center"><span class="active">Leave</span></div>
+                    </ons-list-item>
+                    <ons-list-item modifier="longdivider" onclick="fn.load('transferApproval.html',this)" tappable>
+                        <div class="left"><i class="fa fa-exchange fa-2x" aria-hidden="true"></i></div>
+                        <div class="center"><span>Transfer</span></div>
+                    </ons-list-item>
+                    <ons-list-item modifier="longdivider" onclick="fn.load('grivancesApproval.html',this)" tappable>
+                        <div class="left"><i class="fa fa-user-circle-o fa-2x" aria-hidden="true"></i></div>
+                        <div class="center"><span>Grievance</span></div>
+                    </ons-list-item>
+                    <ons-list-item modifier="longdivider" onclick="fn.load('resignationApproval.html',this)" tappable>
+                        <div class="left"><i class="fa fa-user-times fa-2x" aria-hidden="true"></i></div>
+                        <div class="center"><span>Resignation</span></div>
+                    </ons-list-item>
+                    <ons-list-item modifier="longdivider" onclick="fn.load('idcardrequestApproval.html',this)" tappable>
+                        <div class="left"><i class="fa fa-id-card fa-2x" aria-hidden="true"></i></div>
+                        <div class="center"><span>ID Card Request</span></div>
+                    </ons-list-item>
+                    <ons-list-item modifier="longdivider" onclick="fn.load('resetRegistration.html',this)" tappable>
+                        <div class="left"><i class="fa fa-user-times fa-2x" aria-hidden="true"></i></div>
+                        <div class="center"><span>Reset Registration</span></div>
+                    </ons-list-item>
+                    <ons-list-header>Main Menu</ons-list-header>
+                    <ons-list-item modifier="longdivider" onclick="navigateTo('index.html?employeeID=' + employeeID + '&loginDate=' + loginDate + '&attendanceID=' + attendanceID + '&deviceID=' + deviceID)" tappable>
+                        <div class="left"><i class="fa fa-home fa-2x" aria-hidden="true"></i></div>
+                        <div class="center"><span>Home</span></div>
+                    </ons-list-item>
+
+                </ons-list>
+            </ons-page>
+        </ons-splitter-side>
+        <ons-splitter-content id="content">
+
+        </ons-splitter-content>
+    </ons-splitter>
+
+    <template id="toolBar.html">
+        <ons-page>
+            <ons-toolbar>
+                <ons-row>
+                    <ons-col width="15%" vertical-align="center" style="text-align:center;">
+                        <ons-toolbar-button onclick="fn.open()" tapable>
+                            <i class="fa fa-bars" style="font-size: 30px; color:#ffff00; vertical-align:middle; text-align:center;" aria-hidden="true"></i>
+                        </ons-toolbar-button>
+                    </ons-col>
+                    <ons-col vertical-align="center" width="55%" style="text-align:left; height:100%; color:#FFFFFF; font-weight:bold;" id="divPageName">
+                        <ons-row style="height:70%;">
+                            <ons-col vertical-align="center" width="100%" style="text-align:center; color:#FFFFFF; font-weight:bold;">
+                                <img src="images/HRMSLogo1.png" alt="logo" style="width:53px; height:29px; border-radius:2px;" class="logo" />
+                            </ons-col>
+                        </ons-row>
+                        <ons-row style="height:30%;">
+                            <ons-col vertical-align="center" width="100%" style="text-align:center; font-size:75%; color:#FFFFFF; font-weight:bold;">
+                                Mahashakti Group of Institutions
+                            </ons-col>
+                        </ons-row>
+                    </ons-col>
+
+                    <ons-col width="15%" vertical-align="center" style="text-align:center;">
+                        <ons-toolbar-button id="btnDashboard" onclick="navigateTo('index.html?employeeID=' + employeeID + '&loginDate=' + loginDate + '&attendanceID=' + attendanceID + '&deviceID=' + deviceID)" tapable>
+                            <i class="fa fa-home" aria-hidden="true" style="font-size: 30px; color:#ffff00; vertical-align:middle; text-align:center;"></i>
+                        </ons-toolbar-button>
+                    </ons-col>
+                    <ons-col width="15%" vertical-align="center" style="text-align:center;">
+                        <ons-toolbar-button id="btnPopover" tapable>
+                            <i class="fa fa-ellipsis-v" aria-hidden="true" style="font-size: 30px; color:#ffff00; vertical-align:middle; text-align:center;"></i>
+                        </ons-toolbar-button>
+                    </ons-col>
+
+                </ons-row>
+            </ons-toolbar>
+        </ons-page>
+    </template>
+    <template id="bottomBar.html">
+        <ons-page>
+            <ons-row style="height:100%;">
+                <ons-col vertical-align="center" width="80%" style="font-size:10px; color:#FFFFFF; font-weight:bold;text-align:left; padding-left:5px;">
+                    Powered By XPRO Solutions Pvt. Ltd.
+                </ons-col>
+                <ons-col vertical-align="center" width="20%" style="font-size:10px; color:#FFFFFF; font-weight:bold; text-align:right; padding-right:5px;">
+                    HRMS :: 1.0.1.0
+                </ons-col>
+            </ons-row>
+        </ons-page>
+    </template>
+
+    <template id="employeeLeave.html">
+        <ons-page ons-show="app.title = 'Employes On Leave'" id="employeeLeave" class="functionalPages">
+            <ons-pull-hook class="pull-hook" height="50px" threshold-height="100px"></ons-pull-hook>
+            <ons-toolbar>
+                <ons-navigator page="toolBar.html"></ons-navigator>
+            </ons-toolbar>
+            <ons-gesture-detector>
+                <ons-card id="cardEmployeeOnLeave" class="glossyCards">
+                    <ons-list id="lstEmployeeOnLeave">
+                        <ons-list-header>
+                            <ons-row>
+                                <ons-col width="10%" vertical-align="center" style="text-align:center">
+                                    <i class="fa fa-bed" aria-hidden="true"></i>
+                                    <i class="fa fa-calendar-check-o" style="font-size: .7em !important; position:absolute; top:5px; left:35px;" aria-hidden="true"></i>
+                                </ons-col>
+                                <ons-col width="90%" vertical-align="center" style="text-align:left">Employee On Leave (Today to next 30 days)</ons-col>
+                            </ons-row>
+                        </ons-list-header>
+                        
+                    </ons-list>
+                </ons-card>
+
+                <ons-card id="cardLeaveRequested" class="glossyCards">
+                    <ons-list id="lstLeaveRequested">
+                        <ons-list-header>
+                            <ons-row>
+                                <ons-col width="10%" vertical-align="center" style="text-align:center">
+                                    <i class="fa fa-bed" aria-hidden="true"></i>
+                                    <i class="fa fa-question-circle" style="font-size: .7em !important; position:absolute; top:5px; left:35px;" aria-hidden="true"></i>
+                                </ons-col>
+                                <ons-col width="90%" vertical-align="center" style="text-align:left">Leave Request (Level-1)</ons-col>
+                            </ons-row>
+                        </ons-list-header>
+                    </ons-list>
+                </ons-card>
+
+                <ons-card id="cardLeaveRequestedL2" class="glossyCards">
+                    <ons-list id="lstLeaveRequestedL2">
+                        <ons-list-header>
+                            <ons-row>
+                                <ons-col width="10%" vertical-align="center" style="text-align:center">
+                                    <i class="fa fa-bed" aria-hidden="true"></i>
+                                    <i class="fa fa-question-circle" style="font-size: .7em !important; position:absolute; top:5px; left:35px;" aria-hidden="true"></i>
+                                </ons-col>
+                                <ons-col width="90%" vertical-align="center" style="text-align:left">Leave Request (Level-2)</ons-col>
+                            </ons-row>
+                        </ons-list-header>
+                    </ons-list>
+                </ons-card>
+
+            </ons-gesture-detector>
+            <ons-bottom-toolbar>
+                <ons-navigator page="bottomBar.html"></ons-navigator>
+            </ons-bottom-toolbar>
+        </ons-page>
+    </template>
+    <template id="transferApproval.html">
+        <ons-page ons-show="app.title = 'Approve Transfer'" id="transferApproval" class="functionalPages">
+            <ons-pull-hook class="pull-hook" height="50px" threshold-height="100px"></ons-pull-hook>
+            <ons-toolbar>
+                <ons-navigator page="toolBar.html"></ons-navigator>
+            </ons-toolbar>
+            <ons-gesture-detector>
+                <ons-card id="cardTransferStatus" class="glossyCards">
+                    <ons-list id="lstTransferStatus">
+                        <ons-list-header>
+                            <ons-row>
+                                <ons-col width="10%" vertical-align="center" style="text-align:center">
+                                    <i class="fa fa-exchange" aria-hidden="true"></i>
+                                </ons-col>
+                                <ons-col width="90%" vertical-align="center" style="text-align:left">Transfer Detail</ons-col>
+                            </ons-row>
+                        </ons-list-header>
+                    </ons-list>
+                </ons-card>
+                
+            </ons-gesture-detector>
+            <ons-bottom-toolbar>
+                <ons-navigator page="bottomBar.html"></ons-navigator>
+            </ons-bottom-toolbar>
+        </ons-page>
+    </template>
+    <template id="grivancesApproval.html">
+        <ons-page ons-show="app.title = 'Approve Grivances'" id="grivancesApproval" class="functionalPages">
+            <ons-pull-hook class="pull-hook" height="50px" threshold-height="100px"></ons-pull-hook>
+            <ons-toolbar>
+                <ons-navigator page="toolBar.html"></ons-navigator>
+            </ons-toolbar>
+            <ons-gesture-detector>
+                <ons-card id="cardEmployeeGrivance" class="glossyCards">
+                    <ons-list id="lstEmployeeGrivance">
+                        <ons-list-header>
+                            <ons-row>
+                                <ons-col width="10%" vertical-align="center" style="text-align:center">
+                                    <i class="fa fa-user-circle-o" aria-hidden="true"></i>
+                                    <i class="fa fa-question-circle" style="font-size: .7em !important; position:absolute; top:5px; left:35px;" aria-hidden="true"></i>
+                                </ons-col>
+                                <ons-col width="90%" vertical-align="center" style="text-align:left">Grievance Status</ons-col>
+                            </ons-row>
+                        </ons-list-header>
+                    </ons-list>
+                </ons-card>
+                
+                
+            </ons-gesture-detector>
+            <ons-bottom-toolbar>
+                <ons-navigator page="bottomBar.html"></ons-navigator>
+            </ons-bottom-toolbar>
+        </ons-page>
+    </template>
+    <template id="resignationApproval.html">
+        <ons-page ons-show="app.title = 'Approve Resignation'" id="resignationApproval" class="functionalPages">
+            <ons-pull-hook class="pull-hook" height="50px" threshold-height="100px"></ons-pull-hook>
+            <ons-toolbar>
+                <ons-navigator page="toolBar.html"></ons-navigator>
+            </ons-toolbar>
+            <ons-gesture-detector>
+                <ons-card id="cardResignationStatus" class="glossyCards">
+                    <ons-list id="lstResignationStatus">
+                        <ons-list-header>
+                            <ons-row>
+                                <ons-col width="10%" vertical-align="center" style="text-align:center">
+                                    <i class="fa fa-user-times" aria-hidden="true"></i>
+                                    <i class="fa fa-question-circle" style="font-size: .7em !important; position:absolute; top:5px; left:35px;" aria-hidden="true"></i>
+                                </ons-col>
+                                <ons-col width="90%" vertical-align="center" style="text-align:left">Resignation Status</ons-col>
+                            </ons-row>
+                        </ons-list-header>
+                    </ons-list>
+                </ons-card>
+                
+            </ons-gesture-detector>
+            <ons-bottom-toolbar>
+                <ons-navigator page="bottomBar.html"></ons-navigator>
+            </ons-bottom-toolbar>
+        </ons-page>
+    </template>
+    <template id="attendanceCheck.html" label="attendance">
+        <ons-page id="attendanceCheck" class="functionalPages">
+            <ons-pull-hook class="pull-hook" height="50px" threshold-height="100px"></ons-pull-hook>
+            <ons-toolbar>
+                <ons-navigator page="toolBar.html"></ons-navigator>
+            </ons-toolbar>
+            <ons-gesture-detector>
+                <ons-card class="glossyCards">
+                    <ons-list>
+                        <ons-list-header>
+                            <ons-row>
+                                <ons-col width="10%" vertical-align="center" style="text-align:center">
+                                    <i class="fa fa-hand-paper" style="font-size: 1.1em !important;" aria-hidden="true"></i>
+                                    <i class="fa fa-search" style="font-size: .7em !important; position:absolute; top:5px; left:35px;" aria-hidden="true"></i>
+                                </ons-col>
+                                <ons-col width="90%" vertical-align="center" style="text-align:left">Search Attendance</ons-col>
+                            </ons-row>
+                        </ons-list-header>
+                        <ons-list-item modifier="longdivider">
+                            <ons-row>
+                                <ons-col vertical-align="center" width="30%"><span style="color:red;">*</span>Branch</ons-col>
+                                <ons-col vertical-align="center" width="70%">
+                                    <div class="input-container">
+                                        <ons-select class="select">
+                                            <select class="select-input input-field" id="ddlAttChkEmployeeBranch">
+                                                <option value="0">Select</option>
+                                            </select>
+                                        </ons-select>
+                                    </div>
+                                </ons-col>
+                            </ons-row>
+                        </ons-list-item>
+                        <ons-list-item modifier="longdivider">
+                            <ons-row>
+                                <ons-col vertical-align="center" width="30%">Employee</ons-col>
+                                <ons-col vertical-align="center" width="70%">
+                                    <div class="input-container">
+                                        <ons-select class="select">
+                                            <select class="select-input input-field" id="ddlAttChkEmployee">
+                                                <option value="0">All</option>
+                                            </select>
+                                        </ons-select>
+                                    </div>
+                                </ons-col>
+                            </ons-row>
+                        </ons-list-item>
+                        <ons-list-item modifier="longdivider">
+                            <ons-row>
+                                <ons-col vertical-align="center" width="30%">Date</ons-col>
+                                <ons-col vertical-align="center" width="50%">
+                                    <div class="input-container">
+                                        <input type="date" class="input-field" id="txtAttChkSearchDate" />
+                                    </div>
+                                </ons-col>
+                                <ons-col vertical-align="center" style="text-align:right;" width="20%">
+                                    <ons-button onclick="getAttendanceDetail()"><i class="fa fa-search fa-sx"></i></ons-button>
+                                </ons-col>
+                            </ons-row>
+                        </ons-list-item>
+                    </ons-list>
+                </ons-card>
+                <ons-card class="glossyCards">
+                    <ons-list id="lstAttendance">
+                        <ons-list-header>
+                            <ons-row>
+                                <ons-col width="10%" vertical-align="center" style="text-align:center">
+                                    <i class="fa fa-hand-paper" style="font-size: 1.1em !important;" aria-hidden="true"></i>
+                                    <i class="fa fa-check-square-o" style="font-size: .7em !important; position:absolute; top:5px; left:35px;" aria-hidden="true"></i>
+                                </ons-col>
+                                <ons-col width="90%" vertical-align="center" style="text-align:left">Attendance Detail</ons-col>
+                            </ons-row>
+                        </ons-list-header>
+                    </ons-list>
+                </ons-card>
+                
+            </ons-gesture-detector>
+            <ons-bottom-toolbar>
+                <ons-navigator page="bottomBar.html"></ons-navigator>
+            </ons-bottom-toolbar>
+        </ons-page>
+    </template>
+    <template id="starRating.html">
+        <ons-page id="starRating" class="functionalPages">
+            <ons-pull-hook class="pull-hook" height="50px" threshold-height="100px"></ons-pull-hook>
+            <ons-toolbar>
+                <ons-navigator page="toolBar.html"></ons-navigator>
+            </ons-toolbar>
+            <ons-gesture-detector>
+                <ons-card class="glossyCards">
+                    <ons-list>
+                        <ons-list-header>
+                            <ons-row>
+                                <ons-col width="10%" vertical-align="center" style="text-align:center">
+                                    <i class="fa fa-star" style="font-size: 1.1em !important;" aria-hidden="true"></i>
+                                    <i class="fa fa-search" style="font-size: .7em !important; position:absolute; top:5px; left:35px;" aria-hidden="true"></i>
+                                </ons-col>
+                                <ons-col width="90%" vertical-align="center" style="text-align:left">Rate Employees</ons-col>
+                            </ons-row>
+                        </ons-list-header>
+                        <ons-list-item modifier="longdivider">
+                            <ons-row>
+                                <ons-col vertical-align="center" width="30%"><span style="color:red;">*</span>Branch</ons-col>
+                                <ons-col vertical-align="center" width="70%">
+                                    <div class="input-container">
+                                        <ons-select class="select">
+                                            <select class="select-input input-field" id="ddlRatingEmployeeBranch">
+                                                <option value="0">Select</option>
+                                            </select>
+                                        </ons-select>
+                                    </div>
+                                </ons-col>
+                            </ons-row>
+                        </ons-list-item>
+                    </ons-list>
+                </ons-card>
+                <ons-card class="glossyCards">
+                    <ons-list id="lstStarRating">
+                        <ons-list-header>
+                            <ons-row>
+                                <ons-col width="10%" vertical-align="center" style="text-align:center">
+                                    <i class="fa fa-star" style="font-size: 1.1em !important;" aria-hidden="true"></i>
+                                    <i class="fa fa-check-square-o" style="font-size: .7em !important; position:absolute; top:5px; left:35px;" aria-hidden="true"></i>
+                                </ons-col>
+                                <ons-col width="75%" vertical-align="center" style="text-align:left">Star Rating Detail</ons-col>
+                                <ons-col vertical-align="center" style="text-align:right;" width="15%">
+                                    <i class="fa fa-floppy-o fa-sx" onclick="saveEmployeeRating()" style="font-size:2em !important;"></i>
+                                </ons-col>
+                            </ons-row>
+                        </ons-list-header>
+                    </ons-list>
+                </ons-card>
+
+            </ons-gesture-detector>
+            <ons-bottom-toolbar>
+                <ons-navigator page="bottomBar.html"></ons-navigator>
+            </ons-bottom-toolbar>
+        </ons-page>
+    </template>
+    <template id="idcardrequestApproval.html" label="idcardrequestApproval">
+        <ons-page id="idcardrequestApproval" class="functionalPages">
+            <ons-pull-hook class="pull-hook" height="50px" threshold-height="100px"></ons-pull-hook>
+            <ons-toolbar>
+                <ons-navigator page="toolBar.html"></ons-navigator>
+            </ons-toolbar>
+            <ons-gesture-detector>
+                <ons-card class="glossyCards">
+                    <ons-list id="lstSelfIDCardRequestStatus">
+                        <ons-list-header>
+                            <ons-row>
+                                <ons-col width="10%" vertical-align="center" style="text-align:center">
+                                    <i class="fa fa-id-card" aria-hidden="true"></i>
+                                    <i class="fa fa-question-circle" style="font-size: .7em !important; position:absolute; top:5px; left:35px;" aria-hidden="true"></i>
+                                </ons-col>
+                                <ons-col width="90%" vertical-align="center" style="text-align:left">ID Card Request Ststus</ons-col>
+                            </ons-row>
+                        </ons-list-header>
+                    </ons-list>
+                </ons-card>
+
+
+            </ons-gesture-detector>
+            <ons-bottom-toolbar>
+                <ons-navigator page="bottomBar.html"></ons-navigator>
+            </ons-bottom-toolbar>
+        </ons-page>
+
+    </template>
+
+    <template id="eod.html" label="eod">
+        <ons-page id="eod" class="functionalPages">
+            <ons-pull-hook class="pull-hook" height="50px" threshold-height="100px"></ons-pull-hook>
+            <ons-toolbar>
+                <ons-navigator page="toolBar.html"></ons-navigator>
+            </ons-toolbar>
+            <ons-gesture-detector>
+                <ons-card class="glossyCards">
+                    <ons-list id="lstEmployeeEodList">
+                        <ons-list-header>
+                            <ons-row>
+                                <ons-col width="10%" vertical-align="center" style="text-align:center">
+                                    <i class="fa fa-search" style="font-size: .7em !important; position:absolute; top:5px; left:35px;" aria-hidden="true"></i>
+                                    <i class="fa fa-tasks" style="font-size: 1.2em !important;" aria-hidden="true"></i>
+                                </ons-col>
+                                <ons-col width="90%" vertical-align="center" style="text-align:left">EOD Search</ons-col>
+                            </ons-row>
+                        </ons-list-header>
+                        <ons-list-item modifier="longdivider" class="search">
+                            <ons-row>
+                                <ons-col vertical-align="center" width="20%"><span style="color:red;">*</span>Branch</ons-col>
+                                <ons-col vertical-align="center" width="80%">
+                                    <div class="input-container">
+                                        <ons-select class="select">
+                                            <select class="select-input input-field" id="ddlEodEmployeeBranch">
+                                                <option value="0">Select</option>
+                                            </select>
+                                        </ons-select>
+                                    </div>
+                                </ons-col>
+                            </ons-row>
+                        </ons-list-item>
+                        <ons-list-item modifier="longdivider" class="search">
+                            <ons-row>
+                                <ons-col vertical-align="center" width="20%">Employee</ons-col>
+                                <ons-col vertical-align="center" width="80%">
+                                    <div class="input-container">
+                                        <ons-select class="select">
+                                            <select class="select-input input-field" id="ddlEodEmployee">
+                                                <option value="0">All</option>
+                                            </select>
+                                        </ons-select>
+                                    </div>
+                                </ons-col>
+                            </ons-row>
+                        </ons-list-item>
+                        <ons-list-item modifier="longdivider" class="search">
+                            <ons-row>
+                                <ons-col vertical-align="center" width="20%">Date</ons-col>
+                                <ons-col vertical-align="center" width="60%">
+                                    <div class="input-container">
+                                        <i class="fa fa-calendar icon"></i>
+                                        <input class="input-field" type="date" id="txtEodSearchDate" autocomplete="off" float />
+                                    </div>
+                                </ons-col>
+                                <ons-col vertical-align="center" width="20%" style="text-align:center;">
+                                    <ons-button width="75%" onclick="getEmployeeEodList()"><i class="fa fa-search fa-sx"></i></ons-button>
+                                </ons-col>
+                            </ons-row>
+                        </ons-list-item>
+                    </ons-list>
+                </ons-card>
+            </ons-gesture-detector>
+            <ons-bottom-toolbar>
+                <ons-navigator page="bottomBar.html"></ons-navigator>
+            </ons-bottom-toolbar>
+        </ons-page>
+    </template>
+
+    <template id="resetRegistration.html">
+        <ons-page id="resetRegistration" class="functionalPages">
+            <ons-pull-hook class="pull-hook" height="50px" threshold-height="100px"></ons-pull-hook>
+            <ons-toolbar>
+                <ons-navigator page="toolBar.html"></ons-navigator>
+            </ons-toolbar>
+            <ons-gesture-detector>
+                <ons-card class="glossyCards">
+                    <ons-list>
+                        <ons-list-header>
+                            <ons-row>
+                                <ons-col width="10%" vertical-align="center" style="text-align:center">
+                                    <i class="fa fa-user" style="font-size: 1.1em !important;" aria-hidden="true"></i>
+                                    <i class="fa fa-search" style="font-size: .7em !important; position:absolute; top:5px; left:35px;" aria-hidden="true"></i>
+                                </ons-col>
+                                <ons-col width="90%" vertical-align="center" style="text-align:left">Reset Registration</ons-col>
+                            </ons-row>
+                        </ons-list-header>
+                        <ons-list-item modifier="longdivider">
+                            <ons-row>
+                                <ons-col vertical-align="center" width="30%"><span style="color:red;">*</span>Branch</ons-col>
+                                <ons-col vertical-align="center" width="70%">
+                                    <div class="input-container">
+                                        <ons-select class="select">
+                                            <select class="select-input input-field" id="ddlResetRegEmployeeBranch">
+                                                <option value="0">Select</option>
+                                            </select>
+                                        </ons-select>
+                                    </div>
+                                </ons-col>
+                            </ons-row>
+                        </ons-list-item>
+                        <ons-list-item modifier="longdivider">
+                            <ons-row>
+                                <ons-col vertical-align="center" width="30%">Employee</ons-col>
+                                <ons-col vertical-align="center" width="70%">
+                                    <div class="input-container">
+                                        <ons-select class="select">
+                                            <select class="select-input input-field" id="ddlResetRegEmployee">
+                                                <option value="0">All</option>
+                                            </select>
+                                        </ons-select>
+                                    </div>
+                                </ons-col>
+                            </ons-row>
+                        </ons-list-item>
+                        <ons-list-item modifier="longdivider">
+                            <ons-row>
+                                <ons-col vertical-align="center" style="text-align:right;" width="100%">
+                                    <ons-button onclick="getEmployeeRegistrationDetail()"><i class="fa fa-search fa-sx"></i></ons-button>
+                                </ons-col>
+                            </ons-row>
+                        </ons-list-item>
+                    </ons-list>
+                </ons-card>
+                <ons-card class="glossyCards">
+                    <ons-list id="lstResetRegEmployee">
+                        <ons-list-header>
+                            <ons-row>
+                                <ons-col width="10%" vertical-align="center" style="text-align:center">
+                                    <i class="fa fa-user" style="font-size: 1.1em !important;" aria-hidden="true"></i>
+                                    <i class="fa fa-trash" style="font-size: .7em !important; position:absolute; top:5px; left:35px;" aria-hidden="true"></i>
+                                </ons-col>
+                                <ons-col width="90%" vertical-align="center" style="text-align:left">Employee Detail</ons-col>
+                            </ons-row>
+                        </ons-list-header>
+                    </ons-list>
+                </ons-card>
+
+            </ons-gesture-detector>
+            <ons-bottom-toolbar>
+                <ons-navigator page="bottomBar.html"></ons-navigator>
+            </ons-bottom-toolbar>
+        </ons-page>
+    </template>
+
+    <ons-modal var="modalLoader" id="modalLoader">
+        <ons-icon icon="md-spinner" size="28px" spin></ons-icon>
+        <br><br>
+        Processing request please wait...
+    </ons-modal>
+
+    <ons-modal var="pdfModal" id="pdfModal">
+        <div class="content" style="height:100%; width:100%; background-color:transparent;">
+            <div style="height:5%; text-align:right; vertical-align:middle; text-align:center;">
+                <i class="fa fa-times-circle-o" aria-hidden="true" style="font-size:1.5em; vertical-align:middle;" onclick="$('#pdfModal').hide()"></i>
+            </div>
+            <div style="height:95%;">
+                <iframe id="ifrmPfdViewer" frameborder="0" style="height:100%; width:100%;"></iframe>
+            </div>
+        </div>
+    </ons-modal>
+
+    <ons-alert-dialog id="alertBox" modifier="rowfooter">
+        <div class="alert-dialog-title"></div>
+        <div class="alert-dialog-content message">
+
+        </div>
+        <div class="alert-dialog-footer">
+            <ons-alert-dialog-button  id="btnHideAlert">Ok</ons-alert-dialog-button>
+        </div>
+    </ons-alert-dialog>
+
+    <ons-dialog id="dialogLeaveApproval" class="approvalDialog" modifier="rowfooter">
+        <ons-card class="glossyCards">
+                <ons-list>
+                    <ons-list-header>
+                        <ons-row>
+                            <ons-col width="10%" vertical-align="center" style="text-align:center">
+                                <i class="fa fa-bed" aria-hidden="true"></i>
+                                <i class="fa fa-thumbs-o-up" style="font-size: .7em !important; position:absolute; top:5px; left:35px;" aria-hidden="true"></i>
+                            </ons-col>
+                            <ons-col width="90%" vertical-align="center" style="text-align:left">Leave Approval</ons-col>
+                        </ons-row>
+                    </ons-list-header>
+                    <ons-list-item>
+                        <ons-row>
+                            <ons-col vertical-align="center" width="30%"><span style="color:red;">*</span>Status</ons-col>
+                            <ons-col vertical-align="center" width="70%">
+                                <div class="input-container">
+                                    <ons-select class="select">
+                                        <select class="select-input input-field" id="ddlLeaveApprovalStatus">
+                                            <option value="0">Select</option>
+                                            <option value="A">Approve</option>
+                                            <option value="R">Reject</option>
+                                            <option value="F">Forward</option>
+                                        </select>
+                                    </ons-select>
+                                </div>
+                            </ons-col>
+                        </ons-row>
+                        
+                    </ons-list-item>
+                    <ons-list-item>
+                        <ons-row>
+                        <ons-col vertical-align="center" width="30%"><span style="color:red;">*</span>From Date</ons-col>
+                        <ons-col vertical-align="center" width="70%">
+                            <div class="input-container">
+                                <input type="date" id="txtLeaveApprovalFD" class="input-field" onchange="handleLeaveDateChange(event,'#txtLeaveApprovalFD','#txtLeaveApprovalTD','#txtLeaveApprovalDays')" />
+                            </div>
+                        </ons-col>
+                        </ons-row>
+                        
+                    </ons-list-item>
+                    <ons-list-item>
+                        <ons-row>
+                            <ons-col vertical-align="center" width="30%"><span style="color:red;">*</span>To Date</ons-col>
+                            <ons-col vertical-align="center" width="70%">
+                                <div class="input-container">
+                                    <input type="date" id="txtLeaveApprovalTD" class="input-field" onchange="handleLeaveDateChange(event,'#txtLeaveApprovalFD','#txtLeaveApprovalTD','#txtLeaveApprovalDays')" />
+                                </div>
+                            </ons-col>
+                        </ons-row>
+                        
+                    </ons-list-item>
+                    <ons-list-item>
+                        <ons-row>
+                            <ons-col vertical-align="center" width="30%"><span style="color:red;">*</span>Approved Days</ons-col>
+                            <ons-col vertical-align="center" width="70%">
+                                <div class="input-container">
+                                    <input type="text" id="txtLeaveApprovalDays" class="input-field" placeholder="Approved days" readonly="readonly" />
+                                </div>
+                            </ons-col>
+                        </ons-row>
+                        
+                    </ons-list-item>
+                    <ons-list-item>
+                        <ons-row>
+                            <ons-col vertical-align="center" width="30%"><span style="color:red;">*</span>Remarks</ons-col>
+                            <ons-col vertical-align="center" width="70%">
+                                <div class="input-container">
+                                    <textarea type="text" id="txtLeaveApprovalDescription" class="area input-field" style="height:50px;" rows="30" placeholder="Remark"></textarea>
+                                </div>
+                            </ons-col>
+                        </ons-row>
+                        
+                    </ons-list-item>
+                    <ons-list-item>
+                        <div class="right">
+                            <ons-button onclick="hideDialog('dialogLeaveApproval')"><i class="fa fa-ban" aria-hidden="true"></i></ons-button>
+                            &nbsp;
+                            <ons-button onclick="approveRejectLeave()"><i class="fa fa-check" aria-hidden="true"></i></ons-button>
+                        </div>
+                    </ons-list-item>
+                </ons-list>
+            
+        </ons-card>
+    </ons-dialog>
+
+    <ons-dialog id="dialogTransferApproval" class="approvalDialog" modifier="rowfooter">
+        <ons-card class="glossyCards">
+            <ons-list>
+                <ons-list-header>
+                    <ons-row>
+                        <ons-col width="10%" vertical-align="center" style="text-align:center">
+                            <i class="fa fa-exchange" aria-hidden="true"></i>
+                            <i class="fa fa-thumbs-o-up" style="font-size: .7em !important; position:absolute; top:5px; left:35px;" aria-hidden="true"></i>
+                        </ons-col>
+                        <ons-col width="90%" vertical-align="center" style="text-align:left">Transfer Approval</ons-col>
+                    </ons-row>
+                </ons-list-header>
+                <ons-list-item>
+                    <ons-row>
+                        <ons-col vertical-align="center" width="30%"><span style="color:red;">*</span>Status</ons-col>
+                        <ons-col vertical-align="center" width="70%">
+                            <div class="input-container">
+                                <ons-select class="select">
+                                    <select class="select-input input-field" id="ddlTransferApprovalStatus">
+                                        <option value="0">Select</option>
+                                        <option value="A">Approve</option>
+                                        <option value="R">Reject</option>
+                                    </select>
+                                </ons-select>
+                            </div>
+                        </ons-col>
+                    </ons-row>
+                    
+                </ons-list-item>
+                <ons-list-item>
+                    <ons-row>
+                        <ons-col vertical-align="center" width="30%"><span style="color:red;">*</span>Remarks</ons-col>
+                        <ons-col vertical-align="center" width="70%">
+                            <div class="input-container">
+                                <textarea type="text" id="txtTransferApprovalDescription" class="area input-field" style="height:100px;" rows="30" placeholder="Remark"></textarea>
+                            </div>
+                        </ons-col>
+                    </ons-row>
+                    
+                </ons-list-item>
+                <ons-list-item>
+                    <div class="right">
+                        <ons-button onclick="hideDialog('dialogTransferApproval')"><i class="fa fa-ban" aria-hidden="true"></i></ons-button>
+                        &nbsp;
+                        <ons-button onclick="approveRejectTransfer()"><i class="fa fa-check" aria-hidden="true"></i></ons-button>
+                    </div>
+                </ons-list-item>
+            </ons-list>
+
+        </ons-card>
+    </ons-dialog>
+
+    <ons-dialog id="dialogResignationApproval" class="approvalDialog" modifier="rowfooter">
+        <ons-card class="glossyCards">
+            <ons-list>
+                <ons-list-header>
+                    <ons-row>
+                        <ons-col width="10%" vertical-align="center" style="text-align:center">
+                            <i class="fa fa-user-times" aria-hidden="true"></i>
+                            <i class="fa fa-thumbs-o-up" style="font-size: .7em !important; position:absolute; top:5px; left:35px;" aria-hidden="true"></i>
+                        </ons-col>
+                        <ons-col width="90%" vertical-align="center" style="text-align:left">Resignation Approval</ons-col>
+                    </ons-row>
+                </ons-list-header>
+                <ons-list-item>
+                    <ons-row>
+                        <ons-col vertical-align="center" width="30%"><span style="color:red;">*</span>Status</ons-col>
+                        <ons-col vertical-align="center" width="70%">
+                            <div class="input-container">
+                                <ons-select class="select">
+                                    <select class="select-input input-field" id="ddlResignationApprovalStatus">
+                                        <option value="0">Select</option>
+                                        <option value="A">Approve</option>
+                                        <option value="R">Reject</option>
+                                    </select>
+                                </ons-select>
+                            </div>
+                        </ons-col>
+                    </ons-row>
+                </ons-list-item>
+                <ons-list-item>
+                    <ons-row>
+                        <ons-col vertical-align="center" width="30%"><span style="color:red;">*</span>Last Working Date</ons-col>
+                        <ons-col vertical-align="center" width="70%">
+                            <div class="input-container">
+                                <input type="date" class="input-field" id="txtResignationLD" />
+                            </div>
+                        </ons-col>
+                    </ons-row>
+                    
+                </ons-list-item>
+                <ons-list-item>
+                    <ons-row>
+                        <ons-col vertical-align="center" width="30%"><span style="color:red;">*</span>Remarks</ons-col>
+                        <ons-col vertical-align="center" width="70%">
+                            <div class="input-container">
+                                <textarea type="text" id="txtResignationApprovalDescription" class="area input-field" style="height:50px;" rows="30" placeholder="Remark"></textarea>
+                            </div>
+                        </ons-col>
+                    </ons-row>
+                    
+                </ons-list-item>
+                <ons-list-item>
+                    <div class="right">
+                        <ons-button onclick="hideDialog('dialogResignationApproval')"><i class="fa fa-ban" aria-hidden="true"></i></ons-button>
+                        &nbsp;
+                        <ons-button onclick="approveRejectResignation()"><i class="fa fa-check" aria-hidden="true"></i></ons-button>
+                    </div>
+                </ons-list-item>
+            </ons-list>
+
+        </ons-card>
+    </ons-dialog>
+
+    <ons-dialog id="dialogChangePassword" modifier="rowfooter" class="approvalDialog">
+        <ons-card class="glossyCards">
+            <ons-list>
+                <ons-list-header>
+                    <ons-row>
+                        <ons-col width="10%" vertical-align="center" style="text-align:center">
+                            <i class="fa fa-key" aria-hidden="true"></i>
+                            <i class="fa fa-pencil-square" style="font-size: .7em !important; position:absolute; top:5px; left:35px;" aria-hidden="true"></i>
+                        </ons-col>
+                        <ons-col width="80%" vertical-align="center" style="text-align:left">Change Password</ons-col>
+                        <ons-col width="10%" vertical-align="center" style="text-align:center">
+                            <i class="fa fa-times-circle-o" aria-hidden="true" style="font-size:2em; vertical-align:middle;" onclick="$('#dialogChangePassword').hide()"></i>
+                        </ons-col>
+                    </ons-row>
+                </ons-list-header>
+                <ons-list-item modifier="longdivider">
+                    <ons-row>
+                        <ons-col vertical-align="center" width="30%"><span style="color:red;">*</span>User Name</ons-col>
+                        <ons-col vertical-align="center" width="70%">
+                            <div class="input-container">
+                                <input type="text" class="input-field" id="txtChnagePasswordUserName" placeholder="User Name" float />
+                            </div>
+                        </ons-col>
+                    </ons-row>
+                </ons-list-item>
+                <ons-list-item modifier="longdivider">
+                    <ons-row>
+                        <ons-col vertical-align="center" width="30%"><span style="color:red;">*</span>Old Pwd</ons-col>
+                        <ons-col vertical-align="center" width="70%">
+                            <div class="input-container">
+                                <input type="password" class="input-field" id="txtChangePasswordPassword" placeholder="Old Password" float />
+                            </div>
+                        </ons-col>
+                    </ons-row>
+                </ons-list-item>
+                <ons-list-item modifier="longdivider">
+                    <ons-row>
+                        <ons-col vertical-align="center" width="30%"><span style="color:red;">*</span>New Pwd</ons-col>
+                        <ons-col vertical-align="center" width="70%">
+                            <div class="input-container">
+                                <input type="password" class="input-field" id="txtChangePasswordNewPassword" placeholder="New Password" float />
+                            </div>
+                        </ons-col>
+                    </ons-row>
+                </ons-list-item>
+                <ons-list-item modifier="longdivider">
+                    <ons-row>
+                        <ons-col vertical-align="center" width="30%"><span style="color:red;">*</span>Confirm Pwd</ons-col>
+                        <ons-col vertical-align="center" width="70%">
+                            <div class="input-container">
+                                <input type="password" class="input-field" id="txtChangePasswordConfirmPassword" placeholder="Confirm Password" float />
+                            </div>
+                        </ons-col>
+                    </ons-row>
+                </ons-list-item>
+                <ons-list-item modifier="longdivider">
+                    <div class="right">
+                        <ons-button onclick="hideDialog('dialogChangePassword')"><i class="fa fa-ban" aria-hidden="true"></i> Cancel</ons-button>
+                        &nbsp;&nbsp;
+                        <ons-button onclick="changePassword()"><i class="fa fa-check" aria-hidden="true"></i> Change</ons-button>
+                    </div>
+                </ons-list-item>
+            </ons-list>
+        </ons-card>
+    </ons-dialog>
+
+    <ons-dialog id="dialogAboutDevice" modifier="rowfooter" class="approvalDialog">
+        <ons-card class="glossyCards">
+            <ons-list>
+                <ons-list-header>
+                    <ons-row>
+                        <ons-col width="10%" vertical-align="center" style="text-align:center">
+                            <i class="fa fa-mobile" aria-hidden="true"></i>
+                            <i class="fa fa-info-circle" style="font-size: .7em !important; position:absolute; top:5px; left:35px;" aria-hidden="true"></i>
+                        </ons-col>
+                        <ons-col width="80%" vertical-align="center" style="text-align:left">About App.</ons-col>
+                        <ons-col width="10%" vertical-align="center" style="text-align:center">
+                            <i class="fa fa-times-circle-o" aria-hidden="true" style="font-size:2em; vertical-align:middle;" onclick="$('#dialogAboutDevice').hide()"></i>
+                        </ons-col>
+                    </ons-row>
+                </ons-list-header>
+                <ons-list-item modifier="longdivider">
+                    <ons-row>
+                        <ons-col vertical-align="center" style="text-align:left;" width="30%">
+                            <img src="images/MSFlogo.png" alt="logo" class="logo" style="background-color:white; width:30%; height:30%;" />
+                        </ons-col>
+                        <ons-col vertical-align="center" style="text-align:center" width="40%">
+                            MSF HRMS
+                        </ons-col>
+                        <ons-col vertical-align="center" style="text-align:right;" width="30%">
+                            <img src="images/xpro.png" alt="logo" class="logo" style="background-color:white; width:30%; height:30%;" />
+                        </ons-col>
+                    </ons-row>
+                </ons-list-item>
+                <ons-list-item modifier="longdivider">
+                    <ons-row>
+                        <ons-col vertical-align="center" style="text-align:center" width="100%">
+                            HRMS :: 1.0.1.0
+                        </ons-col>
+                    </ons-row>
+                </ons-list-item>
+                <ons-list-item modifier="longdivider">
+                    <ons-row>
+                        <ons-col vertical-align="center" style="text-align:center" width="100%">
+                            Owned by Mahashakti Group Of Institutions.
+                        </ons-col>
+                    </ons-row>
+                </ons-list-item>
+                <ons-list-item modifier="longdivider">
+                    <ons-row>
+                        <ons-col vertical-align="center" style="text-align:center" width="100%">
+                            Copyright &copy; 2018-2019 XPRO Solutions Pvt. Ltd.
+                        </ons-col>
+                    </ons-row>
+                    <ons-row>
+                        <ons-col vertical-align="center" style="text-align:center" width="100%">
+                            All rights reserved.
+                        </ons-col>
+                    </ons-row>
+                </ons-list-item>
+            </ons-list>
+        </ons-card>
+    </ons-dialog>
+
+    <ons-popover cancelable direction="down" animation="fade-ios" id="popDocument">
+        <ons-list>
+            
+            <ons-list-item modifier="longdivider">
+                <div class="left">
+                    <b><i>Tools</i></b>
+                </div>
+            </ons-list-item>
+            <ons-list-item tappable modifier="longdivider" onclick="showDialog('dialogChangePassword')">
+                <div class="left">
+                    <i class="fa fa-key" aria-hidden="true"></i>
+                </div>
+                <div class="center">
+                    Change password
+                </div>
+            </ons-list-item>
+            <ons-list-item tappable modifier="longdivider" onclick="navigateTo('login.html?source=punchout')">
+                <div class="left">
+                    <i class="fa fa-sign-out" aria-hidden="true"></i>
+                </div>
+                <div class="center">
+                    Punch Out
+                </div>
+            </ons-list-item>
+            <ons-list-item tappable modifier="longdivider" onclick="navigateTo('login.html?source=logout')">
+                <div class="left">
+                    <i class="fa fa-power-off" aria-hidden="true"></i>
+                </div>
+                <div class="center">
+                    Logout
+                </div>
+            </ons-list-item>
+            <ons-list-item tappable modifier="longdivider" onclick="showDialog('dialogAboutDevice')">
+                <div class="left">
+                    <i class="fa fa-mobile" aria-hidden="true"></i>
+                </div>
+                <div class="center">
+                    About App.
+                </div>
+            </ons-list-item>
+        </ons-list>
+
+    </ons-popover>
+
+    <div class="thumbnail-popup">
+        <span class="helper"></span>
+        <div>
+            <div class="popupCloseButton">X</div>
+            <p>
+                <img class="popup-image" src="images/loading.gif" alt="image" style="width:100%; height:100%;" />
+            </p>
+        </div>
+    </div>
+
+    <script src="scripts/jquery-1.4.4.min.js"></script>
+    <script src="scripts/json2.js"></script>
+    <script type="text/javascript" src="scripts/platformOverrides.js"></script>
+    <script type="text/javascript" src="scripts/dashboard.js"></script>
+    <script type="text/javascript" src="scripts/commonScript.js"></script>
+    <script type="text/javascript" src="scripts/jquery.star-rating-svg.js"></script>
+    
+</body>
+</html>
